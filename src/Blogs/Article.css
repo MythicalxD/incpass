@@ -1,0 +1,76 @@
+/* App.css */
+
+
+  .app {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  
+  .content {
+    display: flex;
+    max-width: 1200px;
+    width: 100%;
+  }
+  
+  .article-section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-right: 20px; /* Adjust the margin as needed */
+    padding: 20px;
+    flex: 2; /* Adjust the flex value as needed */
+  }
+  
+  .article-heading {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  
+  .article-content {
+    line-height: 1.6;
+  }
+  
+  .table-of-contents {
+    flex-basis: 300px;
+  }
+  
+  .toc-heading {
+    margin-bottom: 10px;
+  }
+  
+  .toc-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .toc-item {
+    margin-bottom: 8px;
+  }
+  
+  .toc-item.active {
+    font-weight: bold;
+  }
+  
+  .toc-link {
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .toc-link:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 768px) {
+    .content {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+  
+    .table-of-contents {
+      flex-basis: 100%;
+      margin-left: 0;
+    }
+  }
+  
