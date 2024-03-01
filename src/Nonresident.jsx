@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import StripeCheckout from 'react-stripe-checkout';
 import { PiCaretDoubleRightDuotone } from "react-icons/pi";
-
-
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-
 import './Resident.css'; // Add a separate CSS file for styling
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+import CheckoutForm from './components/CheckoutForm';
 
+// Make sure to call `loadStripe` outside of a component’s render to avoid
+// recreating the `Stripe` object on every render.
+const stripePromise = loadStripe('pk_test_51J6TOJDyOVzZxe5dtOFHL6ztQAk8YtSJCnxjA1lMsnCrNtcppzC5xPe9il5PTKfWaGP2gVsv5rUlPtk43tjuqJEN00ySurYRd7');
 
 
 const Nonresident = () => {
@@ -15,47 +17,50 @@ const Nonresident = () => {
     const [selectedShareholder, setSelectedShareholder] = useState('');
     const [selectedOffice, setSelectedOffice] = useState('');
     const [selectedIncorporationType, setSelectedIncorporationType] = useState('');
-    const [selectedPaymentOption, setSelectedPaymentOption] = useState('stripe'); // Default to 'stripe'
     const [selectedIsCorporateShareholder, setSelectedIsCorporateShareholder] = useState('no');
     const [selectedIsSameDirector, setSelectedIsSameDirector] = useState('yes');
     const [numberOfDirectors, setNumberOfDirectors] = useState(0);
     const [agentServiceFee, setAgentServiceFee] = useState(0);
-    // Add these state variables
-    const [selectedGSTHST, setSelectedGSTHST] = useState(false);
-    const [selectedAnnualCompliance, setSelectedAnnualCompliance] = useState(false);
+    const [selectedPostIncorporationOptions, setSelectedPostIncorporationOptions] = useState([]);
+
+
 
     // New state for minute book
     const [selectedMinuteBookOption, setSelectedMinuteBookOption] = useState('');
 
-
-
-
-
-
-    // ... rest of your component
-
-
-    // const [notary, setNotary] = useState(0);
+    const [couponCode, setCouponCode] = useState('');
+    const [discount, setDiscount] = useState(0);
     const [price, setPrice] = useState(0);
 
-    const handlePayment = async (token) => {
-        // Send the payment details to your server for processing
-        const response = await fetch('/process-payment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token,
-                price,
-            }),
-        });
 
-        const result = await response.json();
 
-        // Handle the result as needed
-        console.log(result);
+    const options = {
+        // passing the client secret obtained from the server
+        clientSecret: '{{sk_test_51J6TOJDyOVzZxe5d41cQkzzlfXVgd47ttEjRHoBLGrPtVa493wNBVld3RdcmqhsMF3K53vfBP7UBxPpr0hjvvqDW00PQpmvUEl}}',
+      };
+
+
+
+
+
+
+    const handleCouponCodeChange = (event) => {
+        setCouponCode(event.target.value);
     };
+
+    const applyCoupon = () => {
+        // Dummy coupon codes and their corresponding discounts
+        const coupons = {
+            'INC5': 5,
+            'INC10': 10,
+            'INC15': 15,
+            // Add more coupons if needed
+        };
+
+        const appliedDiscount = coupons[couponCode.toUpperCase()] || 0;
+        setDiscount(appliedDiscount);
+    };
+
 
     const handleNext = () => {
         if (step < 7) {
@@ -72,49 +77,50 @@ const Nonresident = () => {
         }
     };
 
+
+
+
+   
+
+
+
     const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
-        updatePrice(event.target.value, selectedShareholder, selectedOffice, selectedIncorporationType);
+        updatePrice(event.target.value, selectedShareholder, selectedOffice, selectedIncorporationType, selectedIsSameDirector);
     };
 
     const handleShareholderChange = (event) => {
         setSelectedShareholder(event.target.value);
-        updatePrice(selectedCountry, event.target.value, selectedOffice, selectedIncorporationType);
+        updatePrice(selectedCountry, event.target.value, selectedOffice, selectedIncorporationType, selectedIsSameDirector);
     };
 
     const handleOfficeChange = (event) => {
         setSelectedOffice(event.target.value);
-        updatePrice(selectedCountry, selectedShareholder, event.target.value, selectedIncorporationType);
+        updatePrice(selectedCountry, selectedShareholder, event.target.value, selectedIncorporationType, selectedIsSameDirector);
     };
 
     const handleofficeprocess = (event) => {
         setSelectedIncorporationType(event.target.value);
-        updatePrice(selectedCountry, selectedShareholder, selectedOffice, event.target.value);
+        updatePrice(selectedCountry, selectedShareholder, selectedOffice, event.target.value, selectedIsSameDirector);
     };
 
 
 
     const handleCardClick = (countryValue) => {
         setSelectedCountry(countryValue);
-        updatePrice(countryValue, selectedShareholder, selectedOffice, selectedIncorporationType);
+        updatePrice(countryValue, selectedShareholder, selectedOffice, selectedIncorporationType, selectedIsSameDirector);
     };
 
     // Function to handle card click in step 3
     const handleOfficeCardClick = (officeValue) => {
         setSelectedOffice(officeValue);
-        updatePrice(selectedCountry, selectedShareholder, officeValue, selectedIncorporationType);
+        updatePrice(selectedCountry, selectedShareholder, officeValue, selectedIncorporationType, selectedIsSameDirector);
     };
 
     // Function to handle card click in step 4
     const handleIncorporationTypeCardClick = (typeValue) => {
         setSelectedIncorporationType(typeValue);
         updatePrice(selectedCountry, selectedShareholder, selectedOffice, typeValue, selectedIsSameDirector);
-    };
-
-    // Function to handle card click in step 5
-    const handlePaymentOptionCardClick = (optionValue) => {
-        setSelectedPaymentOption(optionValue);
-        // Optionally, you can perform any other actions based on the selected payment option
     };
 
 
@@ -126,7 +132,7 @@ const Nonresident = () => {
 
     const handleIsSameDirectorChange = (event) => {
         setSelectedIsSameDirector(event.target.value);
-        updatePrice(selectedCountry, selectedShareholder, selectedOffice, selectedIncorporationType, event.target.value);
+        updatePrice(selectedCountry, selectedShareholder, selectedOffice, selectedIncorporationType, selectedIsSameDirector, event.target.value);
     };
 
 
@@ -145,18 +151,82 @@ const Nonresident = () => {
     };
 
 
+// ... (previous code)
+
+const handlePostIncorporationOptionClick = (optionValue) => {
+    // Create a copy of the current selected options array
+    const updatedOptions = [...selectedPostIncorporationOptions];
+  
+    // Check if the option is already selected, and toggle its state
+    if (updatedOptions.includes(optionValue)) {
+      const index = updatedOptions.indexOf(optionValue);
+      updatedOptions.splice(index, 1);
+    } else {
+      updatedOptions.push(optionValue);
+    }
+  
+    // Update the state with the new selected options
+    setSelectedPostIncorporationOptions(updatedOptions);
+  
+    // Update the price based on the selected options
+    updatePrice(
+      selectedCountry,
+      selectedShareholder,
+      selectedOffice,
+      selectedIncorporationType,
+      selectedIsSameDirector,
+      selectedMinuteBookOption,
+     // Pass the updated options array
+    );
+  };
+  
+  // ... (rest of the code)
+  
+  
+      
+
+
+
+// Define the postIncorporationOptions array here
+const postIncorporationOptions = [
+    {
+      value: 'option1',
+      label: 'Annual Compliance ',
+      description: 'Description for Option 1',
+      price: 690, 
+    },
+  
+    {
+        value: 'option2',
+        label: 'GST/HST ',
+        description: 'Description for Option 1',
+        price: 499, 
+      },
+    
+
+
+
+  ];
+
+
+
+
+
+      
 
     // Replace the incorrect 'elseif' with 'else if' in the updatePrice function
     const updatePrice = (country, shareholder, office, incorporationType, isSameDirector, minuteBookOption) => {
+
+
         let basePrice;
         if (parseInt(country, 10) === 1) {
-            basePrice = 1499;
+            basePrice = 1199;
         } else if (parseInt(country, 10) === 2) {
-            basePrice = 1499;
+            basePrice = 1199;
         } else if (parseInt(country, 10) === 3) {
-            basePrice = 1499;
+            basePrice = 1199;
         } else {
-            basePrice = 1499;
+            basePrice = 1199;
         }
 
         let calculatePrice = basePrice += parseInt(350 * shareholder, 10);
@@ -164,13 +234,8 @@ const Nonresident = () => {
         if (parseInt(country, 10) === 3) {
             setAgentServiceFee(800);
 
-
-
-
         } else {
             setAgentServiceFee(0);
-
-
 
         }
 
@@ -184,8 +249,12 @@ const Nonresident = () => {
         }
 
         if (parseInt(country, 10) && office === "1") {
-            calculatePrice += 1200;
+            calculatePrice += 499;
         } else if (parseInt(country, 10) && office === "2") {
+            calculatePrice += 699;
+        } else if (parseInt(country, 10) && office === "3") {
+            calculatePrice += 1199;
+        }else if (parseInt(country, 10) && office === "4") {
             calculatePrice += 0;
         }
 
@@ -194,28 +263,31 @@ const Nonresident = () => {
             calculatePrice += 350 * directorsCount;
         }
 
-        if (selectedGSTHST) {
-            calculatePrice += 450;
-        }
 
-        if (selectedAnnualCompliance) {
-            calculatePrice += 690;
-        }
-
-
+  
         // Add pricing for minute book option
         if (minuteBookOption === "directorConsent") {
             calculatePrice += 399;
         }
 
+
+  // Calculate pricing for selected post-incorporation options
+  if (step === 6 && postIncorporationOptions && selectedPostIncorporationOptions) {
+    selectedPostIncorporationOptions.forEach((optionValue) => {
+      const selectedOption = postIncorporationOptions.find((option) => option.value === optionValue);
+      if (selectedOption) {
+        calculatePrice += selectedOption.price;
+      }
+    });
+  }
+
+
+
+
         setPrice(calculatePrice);
     };
 
-
-
     return (
-
-
 
         <div className="containerPriceBox">
 
@@ -247,11 +319,11 @@ const Nonresident = () => {
                                     <div className="card-body priceboxing">
                                         <h5 className="card-title pricehead">Ontario</h5>
                                         <p className="card-price"><button type="button" class="btn btn-dark">Start With </button>
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1499 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
 
                                         <p className="card-text mt-3">
 
-
+                                        <p><b>Non-Resident Director Document Legalization</b></p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Preparation of the Articles of Incorporation</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
@@ -268,7 +340,6 @@ const Nonresident = () => {
                                                 Introduction to Canadian Local Banks</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Nuans Certification</p>
-
                                         </p>
                                         <label className="radio-label">
                                             <input
@@ -278,7 +349,6 @@ const Nonresident = () => {
                                                 checked={selectedCountry === "1"}
                                                 onChange={handleCountryChange}
                                             />
-
                                         </label>
                                     </div>
                                 </div>
@@ -288,10 +358,10 @@ const Nonresident = () => {
                                     <div className="card-body priceboxing">
                                         <h5 className="card-title pricehead">British Columbia</h5>
                                         <p className="card-price"><button type="button" class="btn btn-dark">Start With </button>
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1499 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <p className="card-text">
 
-
+                                        <p><b>Non-Resident Director Document Legalization</b></p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Preparation of the Articles of Incorporation</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
@@ -306,9 +376,6 @@ const Nonresident = () => {
                                                 Business Identification Number (BIN) Registration</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Introduction to Canadian Local Banks</p>
-
-
-
 
                                         </p>
                                         <div className="text-center">
@@ -331,11 +398,9 @@ const Nonresident = () => {
                                     <div className="card-body priceboxing">
                                         <h5 className="card-title pricehead">Alberta</h5>
                                         <p className="card-price"><button type="button" class="btn btn-dark">Start With </button>
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1499 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <p className="card-text">
-
-
-
+                                        <p><b>Non-Resident Director Document Legalization</b></p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Preparation of the Articles of Incorporation</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
@@ -350,7 +415,6 @@ const Nonresident = () => {
                                                 Business Identification Number (BIN) Registration</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Introduction to Canadian Local Banks</p>
-
                                         </p>
                                         <label className="radio-label">
                                             <input
@@ -370,9 +434,6 @@ const Nonresident = () => {
                 </div>
             )}
 
-
-
-
             {step === 2 && (
                 <div className="countryBox">
                     <div className="priceBoxTitle">
@@ -385,24 +446,25 @@ const Nonresident = () => {
                                 {/* Card for Director Consent */}
                                 <div className="card provinceCard" onClick={() => handleMinuteBookOptionCardClick("directorConsent")}>
                                     <div className="card-body priceboxing">
-                                        <h5 className="card-title pricehead">Essential Startup Document (Electronic Copy) <span class="badge text-bg-dark">Recommended</span></h5>
+                                        <h5 className="card-title pricehead">Essential Corporate Minute Book (Electronic Copy) <span class="badge text-bg-dark">Recommended</span></h5>
                                         <p className="card-text">
 
+                                         
+
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                Shareholder Resolution Dispensing With Auditor</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Subscription For Shares</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Director Consent</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                               First Director Resolution</p>
+                                                First Director Resolution</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 By-Laws</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                               Notice of Articles</p>
+                                                Notice of Articles</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                               Director Consent</p>
-                                        
-
-
+                                                Notice Of Issuance Of Uncertificated Share</p>
 
 
                                         </p>
@@ -415,82 +477,42 @@ const Nonresident = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Card for None */}
-                                {/* <div className="card provinceCard" onClick={() => handleMinuteBookOptionCardClick("none")}>
-                                    <div className="card-body priceboxing">
-                                        <h5 className="card-title pricehead">None</h5>
-                                        <p className="card-text">Description or additional information about None.</p>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="radio" name="minuteBookOption" id="none" value="none" checked={selectedMinuteBookOption === "none"} onChange={handleMinuteBookOptionChange} />
-                                            <label className="form-check-label" htmlFor="none">Select</label>
-                                        </div>
-                                    </div>
-                                </div> */}
+
                             </div>
                         </div>
                     </div>
                 </div>
             )}
 
-
-
-
-
-
-
-
-
-
-
-{/* {step === 3 && (
+            {step === 3 && (
                 <div className="countryBox step2-container">
                     <div className="step2-title">How many shareholders?</div>
                     <div className="step2-description">
                         Choose the number of shareholders and specify if the shareholder is a corporation.
                     </div>
-
                     <div className="province row step2-form">
-                        <label htmlFor="shareholderNumber" className="step2-form-label">Number of Shareholders:</label>
-                        <input
-                            type="number"
-                            id="shareholderNumber"
-                            value={selectedShareholder}
-                            onChange={(e) => handleShareholderChange(e)}
-                            className="step2-form-input"
-                        /> */}
-
-
-
-
-{step === 3 && (
-        <div className="countryBox step2-container">
-          <div className="step2-title">How many shareholders?</div>
-          <div className="step2-description">
-            Choose the number of shareholders and specify if the shareholder is a corporation.
-          </div>
-          <div className="province row step2-form">
-            <label htmlFor="shareholderNumber" className="step2-form-label m-4">
-              Number of Shareholders:
-            </label>
-            <p>A director/shareholder of a Canadian corporation needs to provide identification documents for a background check.</p>
-            <div className="shareholder-options-box card-group">
-              {[1, 2, 3, 4].map((option) => (
-                <div key={option} className={`card provinceCard card-body priceboxing shareholder-option-box ${selectedShareholder === option ? 'selected' : ''}`}>
-                  <input
-                    type="radio"
-                    id={`shareholderOption${option}`}
-                    name="shareholderNumber"
-                    value={option}
-                    checked={parseInt(selectedShareholder, 10) === option}
-                    onChange={(e) => handleShareholderChange(e)}
-                    className="step2-form-input  "
-                  />
-                  <label htmlFor={`shareholderOption${option}`} className="shareholder-label-box">
-                    {option}
-                  </label>
-                </div>
-              ))}
-            </div>
+                        <label htmlFor="shareholderNumber" className="step2-form-label m-4">
+                            Number of Shareholders:
+                        </label>
+                        <p>A director/shareholder of a Canadian corporation needs to provide identification documents for a background check.</p>
+                        <div className="shareholder-options-box card-group">
+                            {[1, 2, 3, 4].map((option) => (
+                                <div key={option} className={`card provinceCard card-body priceboxing shareholder-option-box ${selectedShareholder === option ? 'selected' : ''}`}>
+                                    <input
+                                        type="radio"
+                                        id={`shareholderOption${option}`}
+                                        name="shareholderNumber"
+                                        value={option}
+                                        checked={parseInt(selectedShareholder, 10) === option}
+                                        onChange={(e) => handleShareholderChange(e)}
+                                        className="step2-form-input  "
+                                    />
+                                    <label htmlFor={`shareholderOption${option}`} className="shareholder-label-box">
+                                        {option}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
 
                         <label htmlFor="isCorporateShareholder" className="step2-form-label m-5">Is Shareholder Corporate?</label>
                         <p>If the shareholder of a Canadian corporation is another corporate entity, additional documents such as the incorporation certification and articles of incorporation need to be legally verified.</p>
@@ -507,7 +529,7 @@ const Nonresident = () => {
                         {selectedIsCorporateShareholder === "yes" && (
                             <div className='directorBox'>
                                 <label htmlFor="isSameDirector" className="step2-form-label">Is Director Same as Shareholder?</label>
-                               
+
                                 <select
                                     id="isSameDirector"
                                     value={selectedIsSameDirector}
@@ -550,14 +572,82 @@ const Nonresident = () => {
                             <div className="card-group">
 
 
-                                {/* Card for 12 Months */}
+
+                                {/* Card for 3 month */}
                                 <div className="card provinceCard" onClick={() => handleOfficeCardClick("1")}>
                                     <div className="card-body priceboxing">
-                                        <h5 className="card-title pricehead">12 Months</h5>
-                                        <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals.</p>
+                                    <h5 className="card-title pricehead">3 Months</h5>
+                                        <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 5 mail scans included.</p>
 
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1200 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 499 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="office"
+                                                id="office3month"
+                                                value="1"
+                                                checked={selectedOffice === "1"}
+                                                onChange={handleOfficeChange}
+                                            />
+                                            <label className="form-check-label" htmlFor="officeNone">
+                                                Select
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+                                {/* Card for 6 month */}
+                                <div className="card provinceCard" onClick={() => handleOfficeCardClick("2")}>
+                                    <div className="card-body priceboxing">
+                                    <h5 className="card-title pricehead">6 Months</h5>
+                                        <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 5 mail scans included.</p>
+
+                                        <p className="card-price">
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 699 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="office"
+                                                id="office6month"
+                                                value="2"
+                                                checked={selectedOffice === "2"}
+                                                onChange={handleOfficeChange}
+                                            />
+                                            <label className="form-check-label" htmlFor="officeNone">
+                                                Select
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                {/* Card for 12 Months */}
+                                <div className="card provinceCard" onClick={() => handleOfficeCardClick("3")}>
+                                    <div className="card-body priceboxing">
+                                        <h5 className="card-title pricehead">12 Months</h5>
+                                        <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 20 mail scans included.
+
+
+
+
+</p>
+
+                                        <p className="card-price">
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
 
 
                                         <div className="form-check">
@@ -566,8 +656,8 @@ const Nonresident = () => {
                                                 type="radio"
                                                 name="office"
                                                 id="office12Months"
-                                                value="1"
-                                                checked={selectedOffice === "1"}
+                                                value="3"
+                                                checked={selectedOffice === "3"}
                                                 onChange={handleOfficeChange}
                                             />
                                             <label className="form-check-label " htmlFor="office12Months">
@@ -578,18 +668,18 @@ const Nonresident = () => {
                                 </div>
 
                                 {/* Card for None */}
-                                <div className="card provinceCard" onClick={() => handleOfficeCardClick("3")}>
+                                <div className="card provinceCard" onClick={() => handleOfficeCardClick("4")}>
                                     <div className="card-body priceboxing">
-                                        <h5 className="card-title pricehead">None</h5>
-                                        <p className="card-text">Description or additional information about None.</p>
+                                        <h5 className="card-title pricehead">No, thanks. I have my own office space.</h5>
+                                        
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
                                                 type="radio"
                                                 name="office"
                                                 id="officeNone"
-                                                value="3"
-                                                checked={selectedOffice === "3"}
+                                                value="4"
+                                                checked={selectedOffice === "4"}
                                                 onChange={handleOfficeChange}
                                             />
                                             <label className="form-check-label" htmlFor="officeNone">
@@ -606,15 +696,11 @@ const Nonresident = () => {
 
             {step === 5 && (
                 <div className="countryBox">
-
-
                     <div className='priceBoxTitle'>
                         <h2>Selecting the Appropriate Incorporation Type</h2>
                         <p className='priceBoxPara'></p>
                     </div>
-
                     <div className="province row">
-
                         <div className="col">
                             <div className="card-group">
                                 {/* Card for Standard Incorporation */}
@@ -640,7 +726,6 @@ const Nonresident = () => {
                                         </div>
                                     </div>
                                 </div>
-
                                 {/* Card for Rush Incorporation */}
                                 <div className="card provinceCard" onClick={() => handleIncorporationTypeCardClick("2")}>
                                     <div className="card-body priceboxing">
@@ -669,9 +754,6 @@ const Nonresident = () => {
                     </div>
                 </div>
             )}
-
-
-
             {/* // Additional Step 4 for Alberta: Agent Service Fee */}
             {step === 5 && selectedCountry === '3' && (
                 <div className="countryBox">
@@ -688,37 +770,52 @@ const Nonresident = () => {
             )}
 
 
-
-            {step === 6 && (
-                <div className="countryBox">
-                    <div className="priceBoxTitle">
-                        <h2>Last Step ...</h2>
-                        <p className="priceBoxPara">Select post-incorporation options:</p>
-                    </div>
-                    <div className="postIncorporationOptions">
-
-                        <div className="form-check">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="annualComplianceCheckbox"
-                                checked={selectedAnnualCompliance}
-                                onChange={() => setSelectedAnnualCompliance(!selectedAnnualCompliance)}
-                            />
-                            <label className="form-check-label h109" htmlFor="annualComplianceCheckbox">
-                                Annual Compliance ($690 CAD) <span class="badge text-bg-dark">Recommended</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-
-
-
-
-
-
+{step === 6 && (
+  <div className="countryBox">
+    <div className="priceBoxTitle">
+      <h2>Last Step...</h2>
+      <p className="priceBoxPara">Select post-incorporation options:</p>
+    </div>
+    <div className="postIncorporationOptions">
+      <div className="card-group">
+        {postIncorporationOptions.map((option) => (
+          <div
+            key={option.value}
+            className={`card provinceCard ${
+              selectedPostIncorporationOptions.includes(option.value) ? 'selected' : ''
+            }`}
+            onClick={() => handlePostIncorporationOptionClick(option.value)}
+          >
+            <div className="card-body priceBoxing">
+              <h5 className="card-title pricehead">{option.label}</h5>
+              <p className="card-text">{option.description}</p>
+              <p className="card-price">
+                <span style={{ fontSize: '30px', color: '#565658' }}>${option.price}</span>
+                <span style={{ fontSize: '24px', color: '#565658' }}>CAD</span>
+              </p>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id={`postIncorporationOption${option.value}`}
+                  checked={selectedPostIncorporationOptions.includes(option.value)}
+                  readOnly
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`postIncorporationOption${option.value}`}
+                >
+                  Select
+                </label>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+       
 
             {step === 7 && (
                 <div className="countryBox">
@@ -726,75 +823,49 @@ const Nonresident = () => {
 
                     <div className='priceBoxTitle'>
                         <h2>Pay Now</h2>
-                        <p className='priceBoxPara'>Total Price: ${price} </p>
+                        <p className='priceBoxPara'>
+                            Total Price: ${price - (price * discount) / 100}
+                        </p>
+                        {discount > 0 && (
+                            <p className="couponInfo">
+                                Discount applied: {discount}%
+                                <br />
+                                Discounted Price: ${price - (price * discount) / 100}
+                            </p>
+                        )}
+                    </div>
+                    <div className="coupon-section">
+                        <input
+                            type="text"
+                            placeholder="Enter Coupon Code"
+                            value={couponCode}
+                            onChange={handleCouponCodeChange}
+                        />
+                        <button onClick={applyCoupon} className='btnCoupan'>Apply Coupon</button>
                     </div>
 
-                    <div className="province row">
-                        <div className="col priceBoxHeading"><p></p></div>
-                        <div className="col">
-                            <div className="card-group">
-                                {/* Card for Stripe */}
-                                {/* <div className="card provinceCard" onClick={() => handlePaymentOptionCardClick("stripe")}>
-                                    <div className="card-body priceboxing">
-                                        <h5 className="card-title">Stripe</h5>
-                                        <p className="card-text">Description or additional information about Stripe payment.</p>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                name="paymentOption"
-                                                id="stripePayment"
-                                                value="stripe"
-                                                checked={selectedPaymentOption === "stripe"}
-                                                onChange={() => setSelectedPaymentOption("stripe")}
-                                            />
-                                            <label className="form-check-label" htmlFor="stripePayment">
-                                                Select
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div> */}
-
-                                {/* Card for PayPal or other payment options */}
-                                {/* <div className="card provinceCard" onClick={() => handlePaymentOptionCardClick("paypal")}>
-                                    <div className="card-body priceboxing">
-                                        <h5 className="card-title">PayPal (or Other)</h5>
-                                        <p className="card-text">Description or additional information about PayPal payment.</p>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                name="paymentOption"
-                                                id="paypalPayment"
-                                                value="paypal"
-                                                checked={selectedPaymentOption === "paypal"}
-                                                onChange={() => setSelectedPaymentOption("paypal")}
-                                            />
-                                            <label className="form-check-label" htmlFor="paypalPayment">
-                                                Select
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div> */}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stripe Checkout component */}
+                    {/* Stripe Checkout component
                     {selectedPaymentOption === 'stripe' && (
                         <StripeCheckout
                             stripeKey="pk_test_51J6TOJDyOVzZxe5dtOFHL6ztQAk8YtSJCnxjA1lMsnCrNtcppzC5xPe9il5PTKfWaGP2gVsv5rUlPtk43tjuqJEN00ySurYRd7"
                             token={handlePayment}
-                            amount={price * 100} // Amount in cents
+                            amount={(price - (price * discount) / 100) * 100}
                             name="Your Company Name"
                             description="Service Description"
                             currency="CAD"
                         >
                             <button id="stripe-checkout-btn" style={{ display: 'none' }}></button>
                         </StripeCheckout>
-                    )}
+                    )} */}
 
-                    {/* Add similar logic for other payment options if needed */}
+<button id="stripe-checkout-btn" type='button'>Click </button>
+
+<Elements stripe={stripePromise} options={options}>
+      <CheckoutForm />
+    </Elements>
+
+
+
                 </div>
             )}
 
@@ -814,7 +885,7 @@ const Nonresident = () => {
             {/* Total Price */}
             <div className="total-price-section main-price">
                 <p className='main-price-paragraph'> Total Price:
-                    <span style={{ fontSize: '30px', color: "#565658" }}> $</span><span style={{ fontSize: '44px', color: "#565658" }}> {price} </span><span style={{ fontSize: '24px', color: "#565658" }}>CAD</span>
+                    <span style={{ fontSize: '30px', color: "#565658" }}> $</span><span style={{ fontSize: '44px', color: "#565658" }}>  ${price - (price * discount) / 100} </span><span style={{ fontSize: '24px', color: "#565658" }}>CAD</span>
                 </p>
             </div>
 

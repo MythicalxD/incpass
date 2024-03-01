@@ -33,7 +33,7 @@ function PriceBox() {
                 <button type="button" class="btn btn-dark btn-lg">Start With</button>
 
 
-                <p className="card-price"><span style={{ fontSize: '30px', color: "#565658" }}>$</span> 1499 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                <p className="card-price"><span style={{ fontSize: '30px', color: "#565658" }}>$</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
 
 
               </div>

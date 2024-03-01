@@ -196,6 +196,18 @@ label.shareholder-label-box{
     transform: scale(2.4)!important; /* Adjust the scale factor to increase the size */
     /* margin-right: 5px; Add some spacing between the radio button and the label text */
   }
+
+
+  .btnCoupan{
+
+    background-color: var(--primaryColor);
+    font-weight: 600;
+  }
+
+  .btnCoupan:hover{
+    background-color: var(--secondaryColor);
+    color: white;
+  }
   
   /* Adjustments for smaller screens */
   @media (max-width: 576px) {
