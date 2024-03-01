@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { PiCaretDoubleRightDuotone } from "react-icons/pi";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './Resident.css'; // Add a separate CSS file for styling
-import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
-import CheckoutForm from './components/CheckoutForm';
 
+
+
+
+
+const stripePromise = loadStripe('pk_test_51J6TOJDyOVzZxe5dtOFHL6ztQAk8YtSJCnxjA1lMsnCrNtcppzC5xPe9il5PTKfWaGP2gVsv5rUlPtk43tjuqJEN00ySurYRd7');
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe('pk_test_51J6TOJDyOVzZxe5dtOFHL6ztQAk8YtSJCnxjA1lMsnCrNtcppzC5xPe9il5PTKfWaGP2gVsv5rUlPtk43tjuqJEN00ySurYRd7');
+
+
 
 
 const Nonresident = () => {
@@ -34,13 +38,24 @@ const Nonresident = () => {
 
 
 
-    const options = {
-        // passing the client secret obtained from the server
-        clientSecret: '{{sk_test_51J6TOJDyOVzZxe5d41cQkzzlfXVgd47ttEjRHoBLGrPtVa493wNBVld3RdcmqhsMF3K53vfBP7UBxPpr0hjvvqDW00PQpmvUEl}}',
-      };
 
-
-
+    const handleClick = async (event) => {
+        // When the customer clicks on the button, redirect them to Checkout.
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+          lineItems: [{
+            price: '{{0134}}', // Replace with the ID of your price
+            quantity: 1,
+          }],
+          mode: 'payment',
+          successUrl: 'https://example.com/success',
+          cancelUrl: 'https://example.com/cancel',
+        });
+        // If `redirectToCheckout` fails due to a browser or network
+        // error, display the localized error message to your customer
+        // using `error.message`.
+      }
+      
 
 
 
@@ -200,7 +215,7 @@ const postIncorporationOptions = [
         value: 'option2',
         label: 'GST/HST ',
         description: 'Description for Option 1',
-        price: 499, 
+        price: 449, 
       },
     
 
@@ -245,15 +260,15 @@ const postIncorporationOptions = [
         if (parseInt(incorporationType, 10) === 1) {
             calculatePrice += 99; // Standard Incorporation
         } else if (parseInt(incorporationType, 10) === 2) {
-            calculatePrice += 399; // Rush Incorporation
+            calculatePrice += 249; // Rush Incorporation
         }
 
         if (parseInt(country, 10) && office === "1") {
-            calculatePrice += 499;
+            calculatePrice += 399;
         } else if (parseInt(country, 10) && office === "2") {
-            calculatePrice += 699;
+            calculatePrice += 549;
         } else if (parseInt(country, 10) && office === "3") {
-            calculatePrice += 1199;
+            calculatePrice += 999;
         }else if (parseInt(country, 10) && office === "4") {
             calculatePrice += 0;
         }
@@ -580,7 +595,7 @@ const postIncorporationOptions = [
                                         <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 5 mail scans included.</p>
 
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 499 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 399 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -614,7 +629,7 @@ const postIncorporationOptions = [
                                         <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 5 mail scans included.</p>
 
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 699 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 549 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -647,7 +662,7 @@ const postIncorporationOptions = [
 </p>
 
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 999 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
 
 
                                         <div className="form-check">
@@ -732,7 +747,7 @@ const postIncorporationOptions = [
                                         <h5 className="card-title pricehead">Rush Incorporation</h5>
                                         <p className="card-text">the standard timeline for incorporating a company spans approximately 7-10 working days. </p>
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 399 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 249 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -858,11 +873,10 @@ const postIncorporationOptions = [
                         </StripeCheckout>
                     )} */}
 
-<button id="stripe-checkout-btn" type='button'>Click </button>
+<button id="stripe-checkout-btn" role="link" onClick={handleClick}>
+      Checkout
+    </button>
 
-<Elements stripe={stripePromise} options={options}>
-      <CheckoutForm />
-    </Elements>
 
 
 
