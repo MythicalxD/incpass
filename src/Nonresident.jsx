@@ -2,18 +2,6 @@ import React, { useState } from 'react';
 import { PiCaretDoubleRightDuotone } from "react-icons/pi";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './Resident.css'; // Add a separate CSS file for styling
-import {loadStripe} from '@stripe/stripe-js';
-
-
-
-
-
-const stripePromise = loadStripe('pk_test_51J6TOJDyOVzZxe5dtOFHL6ztQAk8YtSJCnxjA1lMsnCrNtcppzC5xPe9il5PTKfWaGP2gVsv5rUlPtk43tjuqJEN00ySurYRd7');
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
-
-
-
 
 const Nonresident = () => {
     const [step, setStep] = useState(1);
@@ -25,60 +13,21 @@ const Nonresident = () => {
     const [selectedIsSameDirector, setSelectedIsSameDirector] = useState('yes');
     const [numberOfDirectors, setNumberOfDirectors] = useState(0);
     const [agentServiceFee, setAgentServiceFee] = useState(0);
-    const [selectedPostIncorporationOptions, setSelectedPostIncorporationOptions] = useState([]);
 
 
 
     // New state for minute book
     const [selectedMinuteBookOption, setSelectedMinuteBookOption] = useState('');
-
-    const [couponCode, setCouponCode] = useState('');
-    const [discount, setDiscount] = useState(0);
     const [price, setPrice] = useState(0);
 
 
-
-
-    const handleClick = async (event) => {
-        // When the customer clicks on the button, redirect them to Checkout.
-        const stripe = await stripePromise;
-        const { error } = await stripe.redirectToCheckout({
-          lineItems: [{
-            price: '{{0134}}', // Replace with the ID of your price
-            quantity: 1,
-          }],
-          mode: 'payment',
-          successUrl: 'https://example.com/success',
-          cancelUrl: 'https://example.com/cancel',
-        });
-        // If `redirectToCheckout` fails due to a browser or network
-        // error, display the localized error message to your customer
-        // using `error.message`.
-      }
       
 
 
-
-    const handleCouponCodeChange = (event) => {
-        setCouponCode(event.target.value);
-    };
-
-    const applyCoupon = () => {
-        // Dummy coupon codes and their corresponding discounts
-        const coupons = {
-            'INC5': 5,
-            'INC10': 10,
-            'INC15': 15,
-            // Add more coupons if needed
-        };
-
-        const appliedDiscount = coupons[couponCode.toUpperCase()] || 0;
-        setDiscount(appliedDiscount);
-    };
-
+      
 
     const handleNext = () => {
-        if (step < 7) {
+        if (step < 6) {
             setStep(step + 1);
         } else {
             // If it's the final step, trigger the Stripe payment
@@ -91,13 +40,6 @@ const Nonresident = () => {
             setStep(step - 1);
         }
     };
-
-
-
-
-   
-
-
 
     const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
@@ -159,75 +101,21 @@ const Nonresident = () => {
         updatePrice(selectedCountry, selectedShareholder, selectedOffice, selectedIncorporationType, selectedIsSameDirector, optionValue);
     };
 
-    // New function to handle minute book option change
-    const handleMinuteBookOptionChange = (event) => {
-        setSelectedMinuteBookOption(event.target.value);
-        updatePrice(selectedCountry, selectedShareholder, selectedOffice, selectedIncorporationType, selectedIsSameDirector, event.target.value);
-    };
-
-
-// ... (previous code)
-
-const handlePostIncorporationOptionClick = (optionValue) => {
-    // Create a copy of the current selected options array
-    const updatedOptions = [...selectedPostIncorporationOptions];
-  
-    // Check if the option is already selected, and toggle its state
-    if (updatedOptions.includes(optionValue)) {
-      const index = updatedOptions.indexOf(optionValue);
-      updatedOptions.splice(index, 1);
-    } else {
-      updatedOptions.push(optionValue);
-    }
-  
-    // Update the state with the new selected options
-    setSelectedPostIncorporationOptions(updatedOptions);
-  
-    // Update the price based on the selected options
-    updatePrice(
-      selectedCountry,
-      selectedShareholder,
-      selectedOffice,
-      selectedIncorporationType,
-      selectedIsSameDirector,
-      selectedMinuteBookOption,
-     // Pass the updated options array
-    );
+ // Modify the places where updatePrice is called to pass the required arguments
+const handleMinuteBookOptionChange = (event) => {
+    setSelectedMinuteBookOption(event.target.value);
+    updatePrice(selectedCountry, selectedShareholder, selectedOffice, selectedIncorporationType, selectedIsSameDirector, event.target.value);
   };
-  
-  // ... (rest of the code)
-  
-  
-      
 
 
 
-// Define the postIncorporationOptions array here
-const postIncorporationOptions = [
-    {
-      value: 'option1',
-      label: 'Annual Compliance ',
-      description: 'Description for Option 1',
-      price: 690, 
-    },
-  
-    {
-        value: 'option2',
-        label: 'GST/HST ',
-        description: 'Description for Option 1',
-        price: 449, 
-      },
+
     
 
 
 
-  ];
 
 
-
-
-
-      
 
     // Replace the incorrect 'elseif' with 'else if' in the updatePrice function
     const updatePrice = (country, shareholder, office, incorporationType, isSameDirector, minuteBookOption) => {
@@ -235,7 +123,7 @@ const postIncorporationOptions = [
 
         let basePrice;
         if (parseInt(country, 10) === 1) {
-            basePrice = 1199;
+            basePrice = 1;
         } else if (parseInt(country, 10) === 2) {
             basePrice = 1199;
         } else if (parseInt(country, 10) === 3) {
@@ -258,7 +146,7 @@ const postIncorporationOptions = [
 
 
         if (parseInt(incorporationType, 10) === 1) {
-            calculatePrice += 99; // Standard Incorporation
+            calculatePrice += 49; // Standard Incorporation
         } else if (parseInt(incorporationType, 10) === 2) {
             calculatePrice += 249; // Rush Incorporation
         }
@@ -266,10 +154,10 @@ const postIncorporationOptions = [
         if (parseInt(country, 10) && office === "1") {
             calculatePrice += 399;
         } else if (parseInt(country, 10) && office === "2") {
-            calculatePrice += 549;
+            calculatePrice += 599;
         } else if (parseInt(country, 10) && office === "3") {
-            calculatePrice += 999;
-        }else if (parseInt(country, 10) && office === "4") {
+            calculatePrice += 899;
+        } else if (parseInt(country, 10) && office === "4") {
             calculatePrice += 0;
         }
 
@@ -279,23 +167,11 @@ const postIncorporationOptions = [
         }
 
 
-  
+
         // Add pricing for minute book option
         if (minuteBookOption === "directorConsent") {
             calculatePrice += 399;
         }
-
-
-  // Calculate pricing for selected post-incorporation options
-  if (step === 6 && postIncorporationOptions && selectedPostIncorporationOptions) {
-    selectedPostIncorporationOptions.forEach((optionValue) => {
-      const selectedOption = postIncorporationOptions.find((option) => option.value === optionValue);
-      if (selectedOption) {
-        calculatePrice += selectedOption.price;
-      }
-    });
-  }
-
 
 
 
@@ -312,8 +188,7 @@ const postIncorporationOptions = [
                 <div className={`step ${step >= 3 ? 'active' : ''}`}></div>
                 <div className={`step ${step >= 4 ? 'active' : ''}`}></div>
                 <div className={`step ${step >= 5 ? 'active' : ''}`}></div>
-                <div className={`step ${step >= 6 ? 'active' : ''}`}></div>
-                <div className={`step ${step === 7 ? 'active' : ''}`}></div>
+                <div className={`step ${step === 6 ? 'active' : ''}`}></div>
             </div>
             {/* <div className="title">On-Demand International</div> */}
 
@@ -338,7 +213,7 @@ const postIncorporationOptions = [
 
                                         <p className="card-text mt-3">
 
-                                        <p><b>Non-Resident Director Document Legalization</b></p>
+                                            <p><b>Non-Resident Director Document Legalization</b></p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Preparation of the Articles of Incorporation</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
@@ -376,7 +251,7 @@ const postIncorporationOptions = [
                                             <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <p className="card-text">
 
-                                        <p><b>Non-Resident Director Document Legalization</b></p>
+                                            <p><b>Non-Resident Director Document Legalization</b></p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Preparation of the Articles of Incorporation</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
@@ -415,7 +290,7 @@ const postIncorporationOptions = [
                                         <p className="card-price"><button type="button" class="btn btn-dark">Start With </button>
                                             <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 1199 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <p className="card-text">
-                                        <p><b>Non-Resident Director Document Legalization</b></p>
+                                            <p><b>Non-Resident Director Document Legalization</b></p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
                                                 Preparation of the Articles of Incorporation</p>
                                             <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
@@ -449,57 +324,9 @@ const postIncorporationOptions = [
                 </div>
             )}
 
+           
+
             {step === 2 && (
-                <div className="countryBox">
-                    <div className="priceBoxTitle">
-                        <h2>Corporate Minute Book</h2>
-                        <p className="priceBoxPara">Select an option for minute book:</p>
-                    </div>
-                    <div className="province row">
-                        <div className="col">
-                            <div className="card-group">
-                                {/* Card for Director Consent */}
-                                <div className="card provinceCard" onClick={() => handleMinuteBookOptionCardClick("directorConsent")}>
-                                    <div className="card-body priceboxing">
-                                        <h5 className="card-title pricehead">Essential Corporate Minute Book (Electronic Copy) <span class="badge text-bg-dark">Recommended</span></h5>
-                                        <p className="card-text">
-
-                                         
-
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                Shareholder Resolution Dispensing With Auditor</p>
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                Subscription For Shares</p>
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                Director Consent</p>
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                First Director Resolution</p>
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                By-Laws</p>
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                Notice of Articles</p>
-                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
-                                                Notice Of Issuance Of Uncertificated Share</p>
-
-
-                                        </p>
-                                        <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}>$</span>399<span style={{ fontSize: '24px', color: "#565658" }}>CAD</span>
-                                        </p>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="radio" name="minuteBookOption" id="directorConsent" value="directorConsent" checked={selectedMinuteBookOption === "directorConsent"} onChange={handleMinuteBookOptionChange} />
-                                            <label className="form-check-label" htmlFor="directorConsent">Select</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {step === 3 && (
                 <div className="countryBox step2-container">
                     <div className="step2-title">How many shareholders?</div>
                     <div className="step2-description">
@@ -572,7 +399,7 @@ const postIncorporationOptions = [
                     </div>
                 </div>
             )}
-            {step === 4 && (
+            {step === 3 && (
                 <div className="countryBox">
 
 
@@ -591,7 +418,7 @@ const postIncorporationOptions = [
                                 {/* Card for 3 month */}
                                 <div className="card provinceCard" onClick={() => handleOfficeCardClick("1")}>
                                     <div className="card-body priceboxing">
-                                    <h5 className="card-title pricehead">3 Months</h5>
+                                        <h5 className="card-title pricehead">3 Months</h5>
                                         <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 5 mail scans included.</p>
 
                                         <p className="card-price">
@@ -613,23 +440,14 @@ const postIncorporationOptions = [
                                     </div>
                                 </div>
 
-
-
-
-
-
-
-
-
-
                                 {/* Card for 6 month */}
                                 <div className="card provinceCard" onClick={() => handleOfficeCardClick("2")}>
                                     <div className="card-body priceboxing">
-                                    <h5 className="card-title pricehead">6 Months</h5>
+                                        <h5 className="card-title pricehead">6 Months</h5>
                                         <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 5 mail scans included.</p>
 
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 549 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 599 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -655,14 +473,10 @@ const postIncorporationOptions = [
                                     <div className="card-body priceboxing">
                                         <h5 className="card-title pricehead">12 Months</h5>
                                         <p className="card-text">A virtual office utilizes a physical location that receives mail for you and can serve as an official business address for your company. It allows you to have a physical presence in any city without the bloated costs of office space rentals. Up to 20 mail scans included.
-
-
-
-
-</p>
+                                        </p>
 
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 999 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 899 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
 
 
                                         <div className="form-check">
@@ -686,7 +500,7 @@ const postIncorporationOptions = [
                                 <div className="card provinceCard" onClick={() => handleOfficeCardClick("4")}>
                                     <div className="card-body priceboxing">
                                         <h5 className="card-title pricehead">No, thanks. I have my own office space.</h5>
-                                        
+
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -709,7 +523,7 @@ const postIncorporationOptions = [
                 </div>
             )}
 
-            {step === 5 && (
+            {step === 4 && (
                 <div className="countryBox">
                     <div className='priceBoxTitle'>
                         <h2>Selecting the Appropriate Incorporation Type</h2>
@@ -724,7 +538,7 @@ const postIncorporationOptions = [
                                         <h5 className="card-title pricehead">Standard Incorporation</h5>
                                         <p className="card-text">The standard timeline for incorporating a company spans approximately 25 working days. </p>
                                         <p className="card-price">
-                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 99 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
+                                            <span style={{ fontSize: '30px', color: "#565658" }}> $</span> 49 <span style={{ fontSize: '24px', color: "#565658" }}>CAD</span></p>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -770,7 +584,7 @@ const postIncorporationOptions = [
                 </div>
             )}
             {/* // Additional Step 4 for Alberta: Agent Service Fee */}
-            {step === 5 && selectedCountry === '3' && (
+            {step === 4 && selectedCountry === '3' && (
                 <div className="countryBox">
                     <div className='priceBoxTitle'>
                         <h2>Agent Service Fee*</h2>
@@ -785,97 +599,75 @@ const postIncorporationOptions = [
             )}
 
 
-{step === 6 && (
-  <div className="countryBox">
-    <div className="priceBoxTitle">
-      <h2>Last Step...</h2>
-      <p className="priceBoxPara">Select post-incorporation options:</p>
-    </div>
-    <div className="postIncorporationOptions">
-      <div className="card-group">
-        {postIncorporationOptions.map((option) => (
-          <div
-            key={option.value}
-            className={`card provinceCard ${
-              selectedPostIncorporationOptions.includes(option.value) ? 'selected' : ''
-            }`}
-            onClick={() => handlePostIncorporationOptionClick(option.value)}
-          >
-            <div className="card-body priceBoxing">
-              <h5 className="card-title pricehead">{option.label}</h5>
-              <p className="card-text">{option.description}</p>
-              <p className="card-price">
-                <span style={{ fontSize: '30px', color: '#565658' }}>${option.price}</span>
-                <span style={{ fontSize: '24px', color: '#565658' }}>CAD</span>
-              </p>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id={`postIncorporationOption${option.value}`}
-                  checked={selectedPostIncorporationOptions.includes(option.value)}
-                  readOnly
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor={`postIncorporationOption${option.value}`}
-                >
-                  Select
-                </label>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-)}
+
+
+
+{step === 5 && (
+                <div className="countryBox">
+                    <div className="priceBoxTitle">
+                        <h2>Corporate Minute Book</h2>
+                        <p className="priceBoxPara">Select an option for minute book:</p>
+                    </div>
+                    <div className="province row">
+                        <div className="col">
+                            <div className="card-group">
+                                {/* Card for Director Consent */}
+                                <div className="card provinceCard" onClick={() => handleMinuteBookOptionCardClick("directorConsent")}>
+                                    <div className="card-body priceboxing">
+                                        <h5 className="card-title pricehead">Essential Corporate Minute Book (Electronic Copy)</h5>
+                                        <p className="card-text">
+
+
+
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                Shareholder Resolution Dispensing With Auditor</p>
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                Subscription For Shares</p>
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                Director Consent</p>
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                First Director Resolution</p>
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                By-Laws</p>
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                Notice of Articles</p>
+                                            <p><PiCaretDoubleRightDuotone style={{ fontSize: '1.4rem', marginRight: "0.4rem" }} />
+                                                Notice Of Issuance Of Uncertificated Share</p>
+
+
+                                        </p>
+                                        <p className="card-price">
+                                            <span style={{ fontSize: '30px', color: "#565658" }}>$</span>399<span style={{ fontSize: '24px', color: "#565658" }}>CAD</span>
+                                        </p>
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="radio" name="minuteBookOption" id="directorConsent" value="directorConsent" checked={selectedMinuteBookOption === "directorConsent"} onChange={handleMinuteBookOptionChange} />
+                                            <label className="form-check-label" htmlFor="directorConsent">Select</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
        
 
-            {step === 7 && (
+
+            {step === 6 && (
                 <div className="countryBox">
 
 
                     <div className='priceBoxTitle'>
                         <h2>Pay Now</h2>
                         <p className='priceBoxPara'>
-                            Total Price: ${price - (price * discount) / 100}
+                            Total Price: ${price}
                         </p>
-                        {discount > 0 && (
-                            <p className="couponInfo">
-                                Discount applied: {discount}%
-                                <br />
-                                Discounted Price: ${price - (price * discount) / 100}
-                            </p>
-                        )}
                     </div>
-                    <div className="coupon-section">
-                        <input
-                            type="text"
-                            placeholder="Enter Coupon Code"
-                            value={couponCode}
-                            onChange={handleCouponCodeChange}
-                        />
-                        <button onClick={applyCoupon} className='btnCoupan'>Apply Coupon</button>
-                    </div>
-
-                    {/* Stripe Checkout component
-                    {selectedPaymentOption === 'stripe' && (
-                        <StripeCheckout
-                            stripeKey="pk_test_51J6TOJDyOVzZxe5dtOFHL6ztQAk8YtSJCnxjA1lMsnCrNtcppzC5xPe9il5PTKfWaGP2gVsv5rUlPtk43tjuqJEN00ySurYRd7"
-                            token={handlePayment}
-                            amount={(price - (price * discount) / 100) * 100}
-                            name="Your Company Name"
-                            description="Service Description"
-                            currency="CAD"
-                        >
-                            <button id="stripe-checkout-btn" style={{ display: 'none' }}></button>
-                        </StripeCheckout>
-                    )} */}
-
-<button id="stripe-checkout-btn" role="link" onClick={handleClick}>
-      Checkout
-    </button>
+               
+<a href='https://buy.stripe.com/fZedU6aJa53e9by2gr'>
+                    <button id="stripe-checkout-btn" role="link" ></button></a>
 
 
 
@@ -890,7 +682,7 @@ const postIncorporationOptions = [
                     </button>
                 )}
                 <button className={`btn btn-dark flowBtn ${step === 6 ? 'hidden' : ''}`} onClick={handleNext}>
-                    {step < 7 ? 'Next' : 'Pay'}
+                    {step < 6 ? 'Next' : 'Pay'}
                 </button>
             </div>
 
@@ -899,7 +691,7 @@ const postIncorporationOptions = [
             {/* Total Price */}
             <div className="total-price-section main-price">
                 <p className='main-price-paragraph'> Total Price:
-                    <span style={{ fontSize: '30px', color: "#565658" }}> $</span><span style={{ fontSize: '44px', color: "#565658" }}>  ${price - (price * discount) / 100} </span><span style={{ fontSize: '24px', color: "#565658" }}>CAD</span>
+                    <span style={{ fontSize: '30px', color: "#565658" }}> $</span><span style={{ fontSize: '44px', color: "#565658" }}> { (price)} </span><span style={{ fontSize: '24px', color: "#565658" }}>CAD</span>
                 </p>
             </div>
 
