@@ -1,392 +1,354 @@
-@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bree+Serif&family=Gelasio:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&family=Russo+One&display=swap');
-
-
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bree+Serif&family=Gelasio:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&family=Russo+One&display=swap");
 
 /* Add these styles to your Resident.css file or your component's styling */
 
-
-:root{
-
-    --primaryColor:#33f28b;
-    --secondaryColor:#525252;
-    --thirdColor:#1d233b;
-    --fourthColor: rgba(233, 70, 10, 0.827);
-    --font1:"Prompt", sans-serif;
-    --font2: "Russo One", sans-serif; 
-    --font3: "Protest Strike", sans-serif;
-    --font4:  "Alfa Slab One", serif;
-
-    
-  
-  }
-  
-
-
+:root {
+  --primaryColor: #33f28b;
+  --secondaryColor: #525252;
+  --thirdColor: #1d233b;
+  --fourthColor: rgba(233, 70, 10, 0.827);
+  --font1: "Prompt", sans-serif;
+  --font2: "Russo One", sans-serif;
+  --font3: "Protest Strike", sans-serif;
+  --font4: "Alfa Slab One", serif;
+}
 
 .containerPriceBox {
-    /* max-width: 800px; */
-    /* margin: 50px auto; */
-    padding: 60px;
-    /* margin: 30px; */
-    background-color: #f8f9fa;
-    /* border: 2px solid #3498db; */
-    border-radius: 15px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  /* max-width: 800px; */
+  /* margin: 50px auto; */
+  padding: 60px;
+  /* margin: 30px; */
+  background-color: #f8f9fa;
+  /* border: 2px solid #3498db; */
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
 }
 
-.priceBoxHeading{
-color: var(--thirdColor);
-    font-size: 24px;
+.priceBoxHeading {
+  color: var(--thirdColor);
+  font-size: 24px;
 }
 
-.priceBoxTitle{
-
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-    
+.priceBoxTitle {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
-.priceBoxTitle h2{
-font-weight: 500!important;
-    font-family: var(--font2)!important;
-
+.priceBoxTitle h2 {
+  font-weight: 500 !important;
+  font-family: var(--font2) !important;
 }
 
-.priceBoxPara{
-    font-size: 22px;
+.priceBoxPara {
+  font-size: 22px;
 }
 
-
-
-
-
-
-.pricehead{
-
-    font-size: 40px;
+.pricehead {
+  font-size: 40px;
 }
-
 
 .title {
-    font-size: 32px;
-    font-weight: bold;
-    color: #3498db;
-    margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #3498db;
+  margin-bottom: 30px;
 }
 
 .countryBox {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .province {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.col-4, .col-6 {
-    padding: 15px;
+.col-4,
+.col-6 {
+  padding: 15px;
 }
 
 .form-select-lg {
-    font-size: 18px;
-    padding: 15px;
-    border: 2px solid #282828;
-    border-radius: 8px;
-    background-color: #ecf0f1;
-    color: #2c3e50;
-    font-weight: 600;
-    font-family: var(--font1)!important;
+  font-size: 18px;
+  padding: 15px;
+  border: 2px solid #282828;
+  border-radius: 8px;
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  font-weight: 600;
+  font-family: var(--font1) !important;
 }
 
 .button-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
 }
-
 
 .flowBtnBack {
-    background-color: var(--secondaryColor);
-    font-weight: 600;
+  background-color: var(--secondaryColor);
+  font-weight: 600;
 }
 
-.flowBtn:hover, .flowBtnBack:hover {
-    background-color: var(--primaryColor);
-    color: var(--secondaryColor);
-    font-weight: 800;
+.flowBtn:hover,
+.flowBtnBack:hover {
+  background-color: var(--primaryColor);
+  color: var(--secondaryColor);
+  font-weight: 800;
 }
 
 .sticky-price {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: black;
-    color: #fff;
-    padding: 15px 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    font-size: 40px;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  color: #fff;
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  font-size: 40px;
 }
 
-
 .flowBtnBack {
-    margin: 0.4rem;
-    font-size: 24px;
-    padding-left: 2rem;
-    padding-right: 2rem;
+  margin: 0.4rem;
+  font-size: 24px;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .flowBtn {
-    margin: 0.4rem;
-    font-size: 24px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-weight: 800;
+  margin: 0.4rem;
+  font-size: 24px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-weight: 800;
 }
 
-
-.priceboxing{
-
-    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
-    border-radius: 24px;
-
+.priceboxing {
+  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
+    rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
+    rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+  border-radius: 24px;
 }
 
-.priceboxing:hover{
-    background-color: var(--primaryColor);
+.priceboxing:hover {
+  background-color: var(--primaryColor);
 }
 
-.h109{
-    font-size: 20px;
+.h109 {
+  font-size: 20px;
 }
 
 .main-price {
-
- font-size: 36px;
- font-family: var(--font1);
- font-weight: 600;
+  font-size: 36px;
+  font-family: var(--font1);
+  font-weight: 600;
 }
 
-
-.main-price-paragraph{
-
-    font-size: 36px;
-    font-family: var(--font2);
+.main-price-paragraph {
+  font-size: 36px;
+  font-family: var(--font2);
 }
 
-label.shareholder-label-box{
-    font-size: 36px;
-    font-family: var(--font4);
-    text-align: center;
-    
+label.shareholder-label-box {
+  font-size: 36px;
+  font-family: var(--font4);
+  text-align: center;
 }
 
 /* Add this CSS to your Resident.css file or wherever your styles are defined */
 
 .radio-label {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Add this line to center the content horizontally */
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Add this line to center the content horizontally */
+}
+
+.radio-label input[type="radio"] {
+  transform: scale(
+    2.4
+  ) !important; /* Adjust the scale factor to increase the size */
+  /* margin-right: 5px; Add some spacing between the radio button and the label text */
+}
+
+.btnCoupan {
+  background-color: var(--primaryColor);
+  font-weight: 600;
+}
+
+.btnCoupan:hover {
+  background-color: var(--secondaryColor);
+  color: white;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 576px) {
   .radio-label input[type="radio"] {
-    transform: scale(2.4)!important; /* Adjust the scale factor to increase the size */
-    /* margin-right: 5px; Add some spacing between the radio button and the label text */
+    transform: scale(
+      1.5
+    ); /* Adjust the scale factor for smaller screens if needed */
   }
-
-
-  .btnCoupan{
-
-    background-color: var(--primaryColor);
-    font-weight: 600;
-  }
-
-  .btnCoupan:hover{
-    background-color: var(--secondaryColor);
-    color: white;
-  }
-  
-  /* Adjustments for smaller screens */
-  @media (max-width: 576px) {
-    .radio-label input[type="radio"] {
-      transform: scale(1.5); /* Adjust the scale factor for smaller screens if needed */
-    }
-  }
-  
-
-
+}
 
 /* Media Query for Mobile */
 @media screen and (max-width: 768px) {
+  .containerPriceBox {
+    width: auto;
+    margin: 0.1rem;
+    padding: 10px;
+  }
 
-    .containerPriceBox{
-        width: auto;
-        margin: 0.1rem;
-        padding: 10px;
-    }
+  .province {
+    flex-direction: column;
+    padding: 1rem;
+  }
 
-    .province {
-        flex-direction: column;
-        padding: 1rem;
+  .col-4,
+  .col-6 {
+    width: 100%;
+    padding: 15px 0;
+  }
 
-    }
+  .button-container {
+    align-items: center;
+  }
 
-    .col-4, .col-6 {
-        width: 100%;
-        padding: 15px 0;
-    }
+  .sticky-price {
+    display: none;
+  }
 
-    .button-container {
-       
-        align-items: center;
-    }
+  .priceBoxTitle {
+    margin-top: 3rem;
+    margin-bottom: 0rem;
+  }
 
+  .priceBoxPara {
+    font-size: 16px;
+  }
 
-    .sticky-price {
-
-        display: none;
-    }
-
-    .priceBoxTitle{
-
-        margin-top: 3rem;
-        margin-bottom: 0rem;
-        
-    }
-
-    .priceBoxPara{
-        font-size: 16px;
-    }
-
-    .priceBoxHeading p{
-        font-size: 18px;
-    }
- 
+  .priceBoxHeading p {
+    font-size: 18px;
+  }
 }
-
-
 
 /* Add this CSS to your Resident.css file or wherever your styles are defined */
 
 .step-indicator {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.step {
+  height: 10px; /* Adjust the height of the line */
+  flex-grow: 1;
+  background-color: #ddd; /* Set the default color of the line */
+}
+
+.step.active {
+  background-color: var(--primaryColor); /* Set the active color of the line */
+}
+
+/* Add a loading animation to the active step when loading */
+.step.active.loading {
+  animation: loadingAnimation 1s infinite alternate; /* Optional: Add a loading animation */
+}
+
+/* Optional loading animation keyframes */
+@keyframes loadingAnimation {
+  0% {
+    width: 100%; /* Start with full width */
   }
-  
+  100% {
+    width: 50%; /* Shrink to half width */
+  }
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 576px) {
   .step {
-    height: 10px; /* Adjust the height of the line */
-    flex-grow: 1;
-    background-color: #ddd; /* Set the default color of the line */
+    height: 3px; /* Adjust the height for smaller screens */
   }
-  
-  .step.active {
-    background-color: var(--primaryColor); /* Set the active color of the line */
-  }
-  
-  /* Add a loading animation to the active step when loading */
-  .step.active.loading {
-    animation: loadingAnimation 1s infinite alternate; /* Optional: Add a loading animation */
-  }
-  
-  /* Optional loading animation keyframes */
-  @keyframes loadingAnimation {
-    0% {
-      width: 100%; /* Start with full width */
-    }
-    100% {
-      width: 50%; /* Shrink to half width */
-    }
-  }
-  
-  /* Adjustments for smaller screens */
-  @media (max-width: 576px) {
-    .step {
-      height: 3px; /* Adjust the height for smaller screens */
-    }
-  }
-  
+}
 
-
-  /* Add these styles at the end of your existing CSS */
+/* Add these styles at the end of your existing CSS */
 
 /* Styles for Step 2 Container */
 .step2-container {
-    padding:20px;
-    margin: 100px;
-    font-family: var(--font2);
+  padding: 20px;
+  margin: 100px;
+  font-family: var(--font2);
 }
 
 /* Styles for Step 2 Title */
 .step2-title {
-    font-size: 44px;
-    font-weight: bold;
-    margin-bottom: 10px;
+  font-size: 44px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 /* Styles for Step 2 Description */
 .step2-description {
-    font-size: 16px;
-    margin-bottom: 20px;
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
 /* Styles for Step 2 Form */
 .step2-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Styles for Form Labels */
 .step2-form-label {
-    margin-bottom: 5px;
-    font-size: 26px;
-    font-family: var(--font2);
-    font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 26px;
+  font-family: var(--font2);
+  font-weight: 600;
 }
 
 /* Styles for Form Inputs and Select */
 .step2-form-input,
 .step2-form-select {
-    width: 20%;
-    padding: 10px;
-    margin-bottom: 15px;
+  width: 20%;
+  padding: 10px;
+  margin-bottom: 15px;
 }
 
-.directorBox{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.directorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Media Query for Mobile Devices */
 @media only screen and (max-width: 767px) {
-    /* Adjust styles for smaller screens */
+  /* Adjust styles for smaller screens */
 
-    .step2-container {
-        padding:10px;
-        margin: 0px;
-    }
+  .step2-container {
+    padding: 10px;
+    margin: 0px;
+  }
 
-    /* Styles for Step 2 Title */
-    .step2-title {
-        font-size: 20px;
-    }
+  /* Styles for Step 2 Title */
+  .step2-title {
+    font-size: 20px;
+  }
 
-    /* Styles for Step 2 Description */
-    .step2-description {
-        font-size: 14px;
-    }
+  /* Styles for Step 2 Description */
+  .step2-description {
+    font-size: 14px;
+  }
 
-    /* Styles for Form Inputs and Select on Mobile */
-    .step2-form-input,
-    .step2-form-select {
-        margin-bottom: 10px;
-        width: 100%;
-
-    }
+  /* Styles for Form Inputs and Select on Mobile */
+  .step2-form-input,
+  .step2-form-select {
+    margin-bottom: 10px;
+    width: 100%;
+  }
 }
